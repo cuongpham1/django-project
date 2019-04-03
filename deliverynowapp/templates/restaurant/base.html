@@ -2,7 +2,37 @@
 
 {% block title %} Restaurant {% endblock %}
 
+{% block script %}
+  <script>
+    $(document).ready(funtion(){
+      var now = new Date():
+      setInterval(funtion(){
+        $.ajax({
+          url: '/apis/restaurant/order/notification/' + now.toISOString() + '/',
+          method: 'GET',
+          success: funtion(data) {
+            if (data['notification'] === 0) {
+              $.('.badge').text('');
+            } else{
+              $.('.badge').text(data['notification']);
+            }
+          }
+        })
+      }, 3000)
+    })
+  </script>
+
+{% endblock %}
+
+</script> %}
+
 {% block sidebar %}
+
+  {% url 'restaurant-order' as restaurant_order_url %}
+  {% url 'restaurant-meal' as restaurant_meal_url %}
+  {% url 'restaurant-report' as restaurant_report_url %}
+  {% url 'restaurant-account' as restaurant_account_url %}
+
   <div class="text-center">
     <img class="img-circle" src="{{ MEDIA_URL }}{{ request.user.restaurant.logo }}"
       width="70" height="70" />
@@ -15,11 +45,19 @@
   <div class="list-group">
     <span class="text-uppercase">Dashboard</span>
 
-    <a href="{% url 'restaurant-order' %}" class="list-group-item">Order</a>
-    <a href="{% url 'restaurant-meal' %}" class="list-group-item">Meal</a>
-    <a href="{% url 'restaurant-report' %}" class="list-group-item">Report</a>
-    <span class="textuupercase">Profile</span>
-    <a href="{% url 'restaurant-account' %}" class="list-group-item">Account</a>
+    <a href="{% url 'restaurant-order' %}"
+        class="list-group-item {% if request.path == restaurant_order_url %} active {% endif %} ">
+        Orders
+        <span class="badge"></span>
+    </a>
+    <a href="{% url 'restaurant-meal' %}"
+        class="list-group-item active {% if request.path == restaurant_meal_url %} active {% endif %} ">Meals</a>
+    <a href="{% url 'restaurant-report' %}"
+        class="list-group-item {% if request.path == restaurant_report_url %} active {% endif %} ">Reports</a>
+
+    <span class="textuppercase">Profile</span>
+    <a href="{% url 'restaurant-account' %}"
+        class="list-group-item {% if request.path == restaurant_account_url %} active {% endif %} ">Account</a>
 
   </div>
 
