@@ -141,8 +141,8 @@ def driver_pick_order(request):
     driver = access_token.user.driver
 
     #Check
-    if Order.objects.filter(driver = driver).exclude(status = Order.ONTHEWAY):
-        return JsonResponse({"status":"failed","error":"You can only pick one order"})
+    if Order.objects.filter(driver = driver).exclude(status = Order.DELIVERED):
+        return JsonResponse({"status":"failed","error":"You can only pick one order at the same time."})
 
     try:
         order = Order.objects.get(
@@ -157,7 +157,7 @@ def driver_pick_order(request):
 
         return JsonResponse({"status":"success"})
     except Order.DoesNotExist:
-        return JsonResponse({"status": "failed", "error":"This order had picked up"})
+        return JsonResponse({"status": "failed", "error":"This order had picked up by another."})
 
     return JsonResponse({})
 
